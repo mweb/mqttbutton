@@ -105,4 +105,9 @@ void setup() {
 
 /** The main loop to run. */
 void loop() {
+    if (!mqtt_client.connected()) {
+        reconnect();
+    }
+    
+    mqtt_client.loop();
 }
