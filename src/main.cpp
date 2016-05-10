@@ -25,13 +25,13 @@ MqttHandler mqtthandler{};
 /** Callback from MqttServer when getting a new message */
 void mqttCallback(char *topic, byte *payload, unsigned int length) {}
 
-void interruptOne() {}
+void interruptOne() { status |= 1; }
 
-void interruptTwo() {}
+void interruptTwo() { status |= 1 << 1; }
 
-void interruptThree() {}
+void interruptThree() { status |= 1 << 2; }
 
-void interruptFour() {}
+void interruptFour() { status |= 1 << 3; }
 
 /** Setup all the inputs and outputs */
 void setupIOPins() {
@@ -41,6 +41,10 @@ void setupIOPins() {
     pinMode(PIN_04, OUTPUT);
 
     pinMode(PIN_05, INPUT_PULLUP);
+    pinMode(PIN_06, INPUT_PULLUP);
+    pinMode(PIN_07, INPUT_PULLUP);
+    pinMode(PIN_08, INPUT_PULLUP);
+
     attachInterrupt(digitalPinToInterrupt(PIN_05), interruptOne, FALLING);
     attachInterrupt(digitalPinToInterrupt(PIN_06), interruptTwo, FALLING);
     attachInterrupt(digitalPinToInterrupt(PIN_07), interruptThree, FALLING);
