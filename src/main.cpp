@@ -66,8 +66,21 @@ void setup() {
 void loop() {
     mqtthandler.loop();
 
-    // if ((status & PIN_05) == PIN_05) {
-    //     mqtt_client.publish(mqtt_topic, "1"); // TODO add /out to topic
-    //     status ^= PIN_05;
-    // }
+    if ((status & 1) == 1) {
+        mqtthandler.publish("1");
+        status ^= 1;
+    }
+    if ((status & 1 << 1) == 1 << 1) {
+        mqtthandler.publish("2");
+        status ^= 1 << 1;
+    }
+    if ((status & 1 << 2) == 1 << 2) {
+        mqtthandler.publish("3");
+        status ^= 1 << 2;
+    }
+    if ((status & 1 << 3) == 1 << 3) {
+        mqtthandler.publish("4");
+        status ^= 1 << 3;
+    }
+    delay(50);
 }
