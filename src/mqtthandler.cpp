@@ -8,17 +8,15 @@
 
 MqttHandler::MqttHandler() {
     setServerAddress("");
-    setPort("8080");
+    setPort("1883");
     setClientName("CLIENTNAME");
     setTopic("/YOURMQTTPATH/NAME");
 
-    // m_wifiClient = std::unique_ptr<WiFiClient>(new WiFiClient());
     m_wifiClient = std::unique_ptr<WiFiClient>(new WiFiClient);
     m_mqttClient =
         std::unique_ptr<PubSubClient>(new PubSubClient(*m_wifiClient));
 }
 
-/* ctor set the default paramters */
 MqttHandler::MqttHandler(const char *server, const char *port, const char *name,
                          const char *topic) {
     setServerAddress(server);
@@ -67,7 +65,7 @@ void MqttHandler::setup(
 void MqttHandler::reconnect() {
     while (!m_mqttClient->connected()) {
         if (m_mqttClient->connect(m_clientName)) {
-            m_mqttClient->subscribe(m_topicIn); // TODO add /in to topic
+            m_mqttClient->subscribe(m_topicIn);
         } else {
             delay(1000);
         }

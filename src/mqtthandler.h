@@ -5,8 +5,9 @@
 #include <functional>
 #include <stdint.h>
 
-class WiFiClient;
 #include <PubSubClient.h>
+
+class WiFiClient;
 class PubSubClient;
 
 constexpr int DEFAULT_LENGTH = 40;
@@ -16,7 +17,7 @@ class MqttHandler {
   public:
     /* ctor with default values
       server = ""
-      port = 8080
+      port = 1883
       name = "CLIENTNAME"
       topic = "/YOURMQTTPATH/NAME"
     */
