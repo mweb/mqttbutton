@@ -1,5 +1,7 @@
 # mqttbutton
 
+[![Build Status](https://travis-ci.org/mweb/mqttbutton.svg?branch=master)](https://travis-ci.org/mweb/mqttbutton)
+
 This Project provides a starting point for your own MQTT Actor/Sensor 
 implementation for ESP8266. It uses 
 [ESP8266 core for Arduino](https://github.com/esp8266/Arduino).
