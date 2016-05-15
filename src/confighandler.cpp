@@ -32,6 +32,7 @@ bool runWiFiManager(MqttHandler &handler, const char *ssid,
     wifiManager.addParameter(&param_mqtt_client_name);
 
     wifiManager.setDebugOutput(false);
+    wifiManager.setSaveConfigCallback(saveConfigCallback);
 
     if (!wifiManager.autoConnect(ssid, passwd)) {
         // failed setup of wifi reset ESP and hope more luck next time
