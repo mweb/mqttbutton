@@ -15,8 +15,6 @@ constexpr int8_t PIN_D7 = 13;
 constexpr int8_t PIN_D8 = 15;
 constexpr int8_t PIN_RX = 3;
 constexpr int8_t PIN_TX = 1;
-constexpr int8_t PIN_SD3 = 10;
-constexpr int8_t PIN_SD2 = 9;
 
 uint16_t status = 0;
 
