@@ -21,7 +21,13 @@ uint16_t status = 0;
 MqttHandler mqtthandler{};
 
 /** Callback from MqttServer when getting a new message */
-void mqttCallback(char *topic, byte *payload, unsigned int length) {}
+void mqttCallback(char *topic, byte *payload, unsigned int length) {
+    if (payload[0] == '1') {
+        digitalWrite(PIN_D1, 1);
+    } else {
+        digitalWrite(PIN_D1, 0);
+    }
+}
 
 void interruptOne() { status |= 1; }
 
