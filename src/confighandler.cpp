@@ -19,7 +19,7 @@ bool runWiFiManager(MqttHandler &handler, const char *ssid,
     WiFiManagerParameter param_mqtt_port("port", "mqtt port", handler.getPort(),
                                          5);
     WiFiManagerParameter param_mqtt_client_name(
-        "client name", "mqtt client name", handler.getClientName(),
+        "client_name", "mqtt client name", handler.getClientName(),
         DEFAULT_LENGTH);
     WiFiManagerParameter param_mqtt_topic("topic", "mqtt topic",
                                           handler.getTopic(), DEFAULT_LENGTH);
