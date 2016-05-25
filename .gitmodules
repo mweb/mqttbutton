@@ -1,6 +1,3 @@
 [submodule "lib/pubsubclient"]
 	path = lib/pubsubclient
 	url = https://github.com/knolleary/pubsubclient.git
-[submodule "lib/WiFiManager"]
-	path = lib/WiFiManager
-	url = https://github.com/tzapu/WiFiManager.git

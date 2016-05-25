@@ -5,6 +5,7 @@
 #include <functional>
 #include <stdint.h>
 
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
 class WiFiClient;
@@ -61,8 +62,8 @@ class MqttHandler {
     char m_topicIn[DEFAULT_LENGTH + 1 + 3];
     char m_topicOut[DEFAULT_LENGTH + 1 + 4];
 
-    std::unique_ptr<WiFiClient> m_wifiClient;
-    std::unique_ptr<PubSubClient> m_mqttClient;
+    WiFiClient m_espClient;
+    PubSubClient m_mqttClient;
 };
 
 #endif

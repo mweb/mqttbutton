@@ -3,30 +3,26 @@
 #include <string>
 
 #include <FS.h>
-#include <WiFiManager.h>  // https://github.com/tzapu/WiFiManager
 #include <PubSubClient.h> // https://github.com/knolleary/pubsubclient.git
 
-MqttHandler::MqttHandler() {
+MqttHandler::MqttHandler() : m_mqttClient(m_espClient) {
     setServerAddress("");
     setPort("1883");
     setClientName("CLIENTNAME");
-    setTopic("/YOURMQTTPATH/NAME");
+    setTopic("YOURMQTTPATH/NAME");
 
-    m_wifiClient = std::unique_ptr<WiFiClient>(new WiFiClient);
-    m_mqttClient =
-        std::unique_ptr<PubSubClient>(new PubSubClient(*m_wifiClient));
+    const char *ssid = "........";
+    const char *password = "........";
+    const char *mqtt_server = "broker.mqtt-dashboard.com";
 }
 
 MqttHandler::MqttHandler(const char *server, const char *port, const char *name,
-                         const char *topic) {
+                         const char *topic)
+    : m_mqttClient(m_espClient) {
     setServerAddress(server);
     setPort(port);
     setClientName(name);
     setTopic(topic);
-
-    m_wifiClient = std::unique_ptr<WiFiClient>(new WiFiClient());
-    m_mqttClient =
-        std::unique_ptr<PubSubClient>(new PubSubClient(*m_wifiClient));
 }
 
 void MqttHandler::loadFromConfigFile(const char *filename) {
@@ -58,14 +54,14 @@ void MqttHandler::saveToConfigFile(const char *filename) {
 
 void MqttHandler::setup(
     std::function<void(char *, uint8_t *, unsigned int)> callback) {
-    m_mqttClient->setServer(m_server, getPortAsInt());
-    m_mqttClient->setCallback(callback);
+    m_mqttClient.setServer(m_server, getPortAsInt());
+    m_mqttClient.setCallback(callback);
 }
 
 void MqttHandler::reconnect() {
-    while (!m_mqttClient->connected()) {
-        if (m_mqttClient->connect(m_clientName)) {
-            m_mqttClient->subscribe(m_topicIn);
+    while (!m_mqttClient.connected()) {
+        if (m_mqttClient.connect(m_clientName)) {
+            m_mqttClient.subscribe(m_topicIn);
         } else {
             delay(1000);
         }
@@ -74,15 +70,15 @@ void MqttHandler::reconnect() {
 
 void MqttHandler::loop() {
     reconnect();
-    m_mqttClient->loop();
+    m_mqttClient.loop();
 }
 
 void MqttHandler::publish(const char *message) {
-    m_mqttClient->publish(m_topicOut, message);
+    m_mqttClient.publish(m_topicOut, message);
 }
 
 void MqttHandler::publish(const char *topic, const char *message) {
-    m_mqttClient->publish(topic, message);
+    m_mqttClient.publish(topic, message);
 }
 
 void MqttHandler::setServerAddress(const char *server) {
@@ -105,7 +101,7 @@ void MqttHandler::setTopic(const char *topic) {
     m_topic[DEFAULT_LENGTH] = 0;
 
     strncpy(m_topicIn, m_topic, DEFAULT_LENGTH);
-    strncat(m_topicIn, "/in", 3);
+    strncat(m_topicIn, "/in/#", 5);
     strncpy(m_topicOut, m_topic, DEFAULT_LENGTH);
     strncat(m_topicOut, "/out", 4);
 }
