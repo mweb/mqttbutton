@@ -35,8 +35,6 @@ void interruptTwo() { status |= 1 << 1; }
 
 void interruptThree() { status |= 1 << 2; }
 
-void interruptFour() { status |= 1 << 3; }
-
 /** Setup all the inputs and outputs */
 void setupIOPins() {
     pinMode(PIN_D1, OUTPUT);
@@ -46,12 +44,10 @@ void setupIOPins() {
     pinMode(PIN_D5, INPUT_PULLUP);
     pinMode(PIN_D6, INPUT_PULLUP);
     pinMode(PIN_D7, INPUT_PULLUP);
-    pinMode(PIN_D8, INPUT_PULLUP);
 
     attachInterrupt(digitalPinToInterrupt(PIN_D5), interruptOne, FALLING);
     attachInterrupt(digitalPinToInterrupt(PIN_D6), interruptTwo, FALLING);
     attachInterrupt(digitalPinToInterrupt(PIN_D7), interruptThree, FALLING);
-    attachInterrupt(digitalPinToInterrupt(PIN_D8), interruptFour, FALLING);
 }
 
 /** The setup entry point, gets called on start up */
@@ -81,10 +77,6 @@ void loop() {
     if ((status & 1 << 2) == 1 << 2) {
         mqtthandler.publish("3");
         status ^= 1 << 2;
-    }
-    if ((status & 1 << 3) == 1 << 3) {
-        mqtthandler.publish("4");
-        status ^= 1 << 3;
     }
     delay(50);
 }
