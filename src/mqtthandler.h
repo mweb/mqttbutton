@@ -1,5 +1,4 @@
-#ifndef mqtthandler_h
-#define mqtthandler_h
+#pragma once
 
 #include <memory>
 #include <functional>
@@ -64,5 +63,3 @@ class MqttHandler {
     std::unique_ptr<WiFiClient> m_wifiClient;
     std::unique_ptr<PubSubClient> m_mqttClient;
 };
-
-#endif

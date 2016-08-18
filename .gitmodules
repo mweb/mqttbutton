@@ -4,3 +4,6 @@
 [submodule "lib/WiFiManager"]
 	path = lib/WiFiManager
 	url = https://github.com/tzapu/WiFiManager.git
+[submodule "lib/NeoPixelBus"]
+	path = lib/NeoPixelBus
+	url = https://github.com/Makuna/NeoPixelBus.git
