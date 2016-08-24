@@ -55,10 +55,10 @@ void setupIOPins() {
 void setup() {
     lightstrip = createLightStrip(12);
     lightstrip->setColorFor(0, 0, 128, 0);
-    lightstrip->update(1);
+    lightstrip->update();
 
     mqtthandler.loadFromConfigFile("/config.bin");
-    if (runWiFiManager(mqtthandler, "mqttbtnswitch", "1234")) {
+    if (runWiFiManager(mqtthandler, "mqttlight", "1234")) {
         mqtthandler.saveToConfigFile("/config.bin");
     }
 
@@ -71,16 +71,19 @@ void setup() {
 void loop() {
     mqtthandler.loop();
     if (status & 1 == 1) {
-        lightstrip->setColor(128, 0, 0);
+        lightstrip->fadeToColor(128, 0, 0, 2000);
         status = 0;
     } else if ((status & 2) == 2) {
-        lightstrip->setColor(0, 128, 0);
+        lightstrip->fadeToColor(128, 128, 0, 5000);
         status = 0;
     } else if ((status & 4) == 4) {
-        lightstrip->setColor(0, 0, 128);
+        lightstrip->setColor(0, 0, 0);
+        lightstrip->setColorFor(0, 0, 0, 128);
+        lightstrip->setColorFor(5, 128, 0, 0);
+        lightstrip->rotateLeft(200);
         status = 0;
     }
 
-    lightstrip->update(1);
-    delay(150);
+    lightstrip->update();
+    delay(50);
 }
