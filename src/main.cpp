@@ -22,6 +22,18 @@ uint16_t status = 0;
 MqttHandler mqtthandler{};
 LightStrip *lightstrip;
 
+enum class CurrentStatus {
+    Off,
+    White,
+    LightBlue,
+    Pink,
+    LightGreen,
+    RedBlueRotate
+};
+
+CurrentStatus currentLightStatus{CurrentStatus::Off};
+bool buttonReleased{true};
+
 /** Callback from MqttServer when getting a new message */
 void mqttCallback(char *topic, byte *payload, unsigned int length) {
     if (payload[0] == '1') {
@@ -45,10 +57,6 @@ void setupIOPins() {
     pinMode(PIN_D5, INPUT_PULLUP);
     pinMode(PIN_D6, INPUT_PULLUP);
     pinMode(PIN_D7, INPUT_PULLUP);
-
-    attachInterrupt(digitalPinToInterrupt(PIN_D5), interruptOne, FALLING);
-    attachInterrupt(digitalPinToInterrupt(PIN_D6), interruptTwo, FALLING);
-    attachInterrupt(digitalPinToInterrupt(PIN_D7), interruptThree, FALLING);
 }
 
 /** The setup entry point, gets called on start up */
@@ -58,30 +66,68 @@ void setup() {
     lightstrip->update();
 
     mqtthandler.loadFromConfigFile("/config.bin");
+    lightstrip->setColorFor(1, 0, 128, 0);
+    lightstrip->update();
     if (runWiFiManager(mqtthandler, "mqttlight", "1234")) {
         mqtthandler.saveToConfigFile("/config.bin");
+        lightstrip->setColorFor(1, 0, 128, 128);
+        lightstrip->update();
     }
+    lightstrip->setColorFor(2, 0, 128, 0);
+    lightstrip->update();
 
     mqtthandler.setup(mqttCallback);
+    lightstrip->setColorFor(3, 0, 128, 0);
+    lightstrip->update();
 
     setupIOPins();
+    lightstrip->setColorFor(4, 0, 128, 0);
+    lightstrip->update();
 }
 
 /** The main loop to run. */
 void loop() {
-    mqtthandler.loop();
-    if (status & 1 == 1) {
-        lightstrip->fadeToColor(128, 0, 0, 2000);
-        status = 0;
-    } else if ((status & 2) == 2) {
-        lightstrip->fadeToColor(128, 128, 0, 5000);
-        status = 0;
-    } else if ((status & 4) == 4) {
-        lightstrip->setColor(0, 0, 0);
-        lightstrip->setColorFor(0, 0, 0, 128);
-        lightstrip->setColorFor(5, 128, 0, 0);
-        lightstrip->rotateLeft(200);
-        status = 0;
+    // lightstrip->setColorFor(4, 128, 0, 0);
+    // lightstrip->update();
+    // mqtthandler.loop();
+    // lightstrip->setColorFor(4, 0, 0, 128);
+    // lightstrip->update();
+    int val = digitalRead(PIN_D5);
+    if (val == HIGH && buttonReleased) {
+        switch (currentLightStatus) {
+        case CurrentStatus::Off:
+            currentLightStatus = CurrentStatus::White;
+            lightstrip->fadeToColor(128, 128, 128, 2000);
+            break;
+        case CurrentStatus::White:
+            currentLightStatus = CurrentStatus::LightBlue;
+            lightstrip->fadeToColor(20, 20, 128, 2000);
+            break;
+        case CurrentStatus::LightBlue:
+            currentLightStatus = CurrentStatus::LightGreen;
+            lightstrip->fadeToColor(20, 128, 20, 2000);
+            break;
+        case CurrentStatus::LightGreen:
+            currentLightStatus = CurrentStatus::Pink;
+            lightstrip->fadeToColor(128, 20, 20, 2000);
+            break;
+        case CurrentStatus::Pink:
+            currentLightStatus = CurrentStatus::RedBlueRotate;
+            lightstrip->setColor(0, 0, 0);
+            lightstrip->setColorFor(0, 0, 0, 128);
+            lightstrip->setColorFor(1, 0, 0, 128);
+            lightstrip->setColorFor(6, 128, 0, 0);
+            lightstrip->setColorFor(7, 128, 0, 0);
+            lightstrip->rotateLeft(200);
+            break;
+        case CurrentStatus::RedBlueRotate:
+            currentLightStatus = CurrentStatus::Off;
+            lightstrip->fadeToColor(0, 0, 0, 2000);
+            break;
+        }
+        buttonReleased = false;
+    } else if (val == LOW && !buttonReleased) {
+        buttonReleased = true;
     }
 
     lightstrip->update();
